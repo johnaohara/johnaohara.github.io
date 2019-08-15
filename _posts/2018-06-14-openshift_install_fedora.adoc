@@ -3,7 +3,6 @@ layout: post
 date:   2019-05-23 00:00 +0100
 author: johara
 synopsis: Openshift installation on Fedora
-background: '/img/electrical-planning-3536767_1920.jpg'
 ---
 
 So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Openshift on Fedora 27, that will get you up and running in no time!
