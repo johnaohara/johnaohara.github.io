@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-08-15T08:19:44+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jack Of all Trades, Master of none</title><subtitle>Musings of a Mediocre Java Muddleware Muskateer</subtitle><entry><title type="html">Openshift_install_fedora</title><link href="http://localhost:4000/2019/05/23/openshift_install_fedora.html" rel="alternate" type="text/html" title="Openshift_install_fedora" /><published>2019-05-23T00:00:00+01:00</published><updated>2019-05-23T00:00:00+01:00</updated><id>http://localhost:4000/2019/05/23/openshift_install_fedora</id><content type="html" xml:base="http://localhost:4000/2019/05/23/openshift_install_fedora.html">&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Openshift on Fedora 27, that will get you up and running in no time!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;docker_rpm_installation_configuration&quot;&gt;Docker rpm installation &amp;amp; configuration&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Following step-by-step guide will allow you to install the latest version of docker and openshift origin on Fedora 27.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;remove_old_versions_of_docker&quot;&gt;remove old versions of docker&lt;/h3&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;$ sudo dnf remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-selinux \
+                  docker-engine-selinux \
+                  docker-engine&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;setup_docker_repository&quot;&gt;setup docker repository&lt;/h3&gt;
+&lt;div class=&quot;olist arabic&quot;&gt;
+&lt;ol class=&quot;arabic&quot;&gt;
+&lt;li&gt;
+&lt;p&gt;install dnf-plugins-core which provides command line tools to manage your dnf repo.&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ sudo dnf -y install dnf-plugins-core&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;configure the &lt;strong&gt;stable&lt;/strong&gt; fedora repository&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ sudo dnf config-manager \
+  --add-repo \
+  https://download.docker.com/linux/fedora/docker-ce.repo&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Optional&lt;/strong&gt;: enable the &lt;strong&gt;edge&lt;/strong&gt; and &lt;strong&gt;test&lt;/strong&gt; repos, which are disabled by default in the docker.repo&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ sudo dnf config-manager --set-enabled docker-ce-edge
+$ sudo dnf config-manager --set-enabled docker-ce-test&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;install_docker_ce&quot;&gt;Install Docker-CE&lt;/h3&gt;
+&lt;div class=&quot;olist arabic&quot;&gt;
+&lt;ol class=&quot;arabic&quot;&gt;
+&lt;li&gt;
+&lt;p&gt;Install latest version of Docker-ce&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ sudo dnf install docker-ce-17.12.1.ce-1.fc27.x86_64&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock warning&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-warning&quot; title=&quot;Warning&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+Currently, docker versions greater then 17.12 do not work correctly with openshift v3.9.0. If you use a more recent version, you will likely see the following expception &quot;linux mounts: Could not find source mount of /var/lib/origin/openshift.local.volumes&quot;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Start Docker&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ sudo systemctl start docker&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;verfiy that the docker deamon is running correctly by running the &lt;code&gt;hello-world&lt;/code&gt; image&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ sudo docker run hello-world&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+If installation has been successfull, you should see the following terminal output
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;   # sudo docker run hello-world
+
+     Hello from Docker!
+     This message shows that your installation appears to be working correctly.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;create docker group to manage docker service&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ sudo groupadd docker&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;add current user to docker group&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ sudo usermod -aG docker $USER&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;or a specific user&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ sudo usermod -aG docker bob&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Log out and log back in again to ensure user has picked up the new group membership&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Test that you can use the docker service without sudo&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ docker run hello-world&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;openshift_installation_configuration&quot;&gt;Openshift installation &amp;amp; configuration&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;olist arabic&quot;&gt;
+&lt;ol class=&quot;arabic&quot;&gt;
+&lt;li&gt;
+&lt;p&gt;Download the binary from the Releases page. &lt;a href=&quot;https://www.openshift.org/download.html&quot; class=&quot;bare&quot;&gt;https://www.openshift.org/download.html&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Unpackage openshift server&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ tar xvf openshift-origin-server-v3.9.0-191fece-linux-64bit.tar.gz&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Unpackage openshift client tool&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ tar xvf openshift-origin-client-tools-v3.9.0-191fece-linux-64bit.tar.gz&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ensure required packages are installed&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ dnf install wget git net-tools bind-utils dnf-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ensure system is up to date&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ dnf update&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Add the directory you untarred the release into to your path:&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ export PATH=&quot;$(pwd)&quot;:$PATH&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create a file /etc/docker/daemon.json with following content&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;{
+    &quot;insecure-registries&quot; : [ &quot;hostname.cloudapp.net:5000&quot; ]
+}&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Restart docker&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ systemctl daemon-reload
+$ systemctl restart docker&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Launch the openshift cluster:&lt;/p&gt;
+&lt;div class=&quot;literalblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre&gt;$ oc cluster up&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If the above steps have been successful, you should see the following output&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;# sudo oc cluster up
+Using nsenter mounter for OpenShift volumes
+Using 127.0.0.1 as the server IP
+Starting OpenShift using openshift/origin:v3.9.0 ...
+OpenShift server started.
+
+The server is accessible via web console at:
+    https://127.0.0.1:8443
+
+You are logged in as:
+    User:     developer
+    Password: &amp;lt;any value&amp;gt;
+
+To login as administrator:
+    oc login -u system:admin&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content><author><name>johara</name></author><summary type="html">So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Openshift on Fedora 27, that will get you up and running in no time!</summary></entry><entry><title type="html">Debugging native Quarkus binaries on Linux</title><link href="http://localhost:4000/2019/05/23/GraalVM-Debug-Native-Image.html" rel="alternate" type="text/html" title="Debugging native Quarkus binaries on Linux" /><published>2019-05-23T00:00:00+01:00</published><updated>2019-05-23T00:00:00+01:00</updated><id>http://localhost:4000/2019/05/23/GraalVM-Debug-Native-Image</id><content type="html" xml:base="http://localhost:4000/2019/05/23/GraalVM-Debug-Native-Image.html">&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Quarkus strives to acheive parity between ruuning your hotspot on a JVM in jvm mode or GraalVM in native mode. If you find something works on the JVM, but does not in a native binary, that is a bug.  Any bugs you find, please report at &lt;a href=&quot;https://github.com/quarkusio/quarkus/issues&quot; class=&quot;bare&quot;&gt;https://github.com/quarkusio/quarkus/issues&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Debugging your application should be no harder than descrived in the &lt;a href=&quot;/../guides/maven-tooling.html#debugging&quot;&gt;Maven Guide&lt;/a&gt; or &lt;a href=&quot;/../guides/gradle-tooling.html#debugging&quot;&gt;Gradle Guide&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;However, there are times when you need to understand what is actually occurring in your native image, or your just curious as to what is happening under the hood.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This guide describes how to build a native image with debug symbols, how to attach a debugger (GDB) and how to set breakpoints.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This guide does not provide a full tutorial of how to debug with GDB.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Because native binaries are platform specific, this guide covers how to debug a native image on Linux.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;prerequisites&quot;&gt;Prerequisites&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Quarkus 0.16.0 (or later)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GraalVM Enterprise Edition (EE) 1.0.0-rc16&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GDB&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A working Quarkus application. Please see &lt;a href=&quot;#/../guides/building-native-image-guide&quot;&gt;Building Native Image Guide&lt;/a&gt; or &lt;a href=&quot;https://github.com/quarkusio/quarkus-quickstarts&quot; class=&quot;bare&quot;&gt;https://github.com/quarkusio/quarkus-quickstarts&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Debug symbols are only supported in the Enterprise Edition (EE) of GraalVM. The Comunity Edition (CE) will not generate the neccesary debug symbols&lt;/p&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;build_a_debuggable_native_image&quot;&gt;Build a debuggable native image&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;I will use the &lt;a href=&quot;https://github.com/quarkusio/quarkus-quickstarts/tree/master/getting-started&quot;&gt;getting start quickstart&lt;/a&gt; available from &lt;a href=&quot;https://github.com/quarkusio/quarkus-quickstarts&quot; class=&quot;bare&quot;&gt;https://github.com/quarkusio/quarkus-quickstarts&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;1_set_graalvm_home_to_graalvm_ee_directory&quot;&gt;1) Set GRAALVM_HOME to GraalVM EE directory&lt;/h3&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$export GRAALVM_HOME=path_to_graalvm_ee&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;2_build_native_binary_with_debug_symbols&quot;&gt;2) Build native binary with debug symbols&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We need to configure the build tools to pass the correct parameters to the native image generator.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Please follow either the Maven build steps or Gradle build steps depending on your preferred build tool.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;maven&quot;&gt;Maven&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Edit the &lt;code&gt;pom.xml&lt;/code&gt;, add the following to the &lt;code&gt;quarkus-maven-plugin&lt;/code&gt; configuration;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;&amp;lt;plugin&amp;gt;
+    &amp;lt;groupId&amp;gt;io.quarkus&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;quarkus-maven-plugin&amp;lt;/artifactId&amp;gt;
+    ...
+            &amp;lt;configuration&amp;gt;
+                ...
+                &amp;lt;additionalBuildArgs&amp;gt;
+                    &amp;lt;additionalBuildArg&amp;gt;-g&amp;lt;/additionalBuildArg&amp;gt;
+                &amp;lt;/additionalBuildArgs&amp;gt;
+                ...
+            &amp;lt;/configuration&amp;gt;
+    ...
+&amp;lt;/plugin&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Build the native images with debug symbols enabled&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$mvn clean package -P native&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are trying to build a native image with debug symbols with GraalVM Community Edition (CE) the build will fail with:  &lt;code&gt;Error: Unrecognized option: -g&lt;/code&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Change to the target directory;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$cd target&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;There should now be two binary images created;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$ls *-runner*
+./getting-started-1.0-SNAPSHOT-runner ./getting-started-1.0-SNAPSHOT-runner.debug&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You are now ready to &lt;a href=&quot;#debug-with-gdb&quot;&gt;[debug-with-gdb]&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;gradle&quot;&gt;Gradle&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;edit &lt;code&gt;build.gradle&lt;/code&gt;, and add the following to the end of the build script;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;buildNative.configure {
+    additionalBuildArgs = [&quot;-g&quot;]
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Build the native images with debug symbols enabled&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$gradlew clean build buildNative --docker-build=false&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are trying to build a native image with debug symbols with GraalVM Community Edition (CE) the build will fail with:  &lt;code&gt;Error: Unrecognized option: -g&lt;/code&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Change to the build directory;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$cd build&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;There should now be two binary images created;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$ ls  ./*runner*
+./getting-started-runner  ./getting-started-runner.debug&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;debug_with_gdb&quot;&gt;&lt;span id=&quot;debug-with-gdb&quot;&gt;Debug with GDB&lt;/span&gt;&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;1_start_applicatipon_with_gdb&quot;&gt;1) Start applicatipon with gdb&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Start GDB session&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$gdb ./getting-started-1.0-SNAPSHOT-runner&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;or&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$gdb ./getting-started-runner&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;setting_breakpoints&quot;&gt;Setting breakpoints&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Before we start our application running, we are going to set a breakpoint using the fully qualified name for our Java method&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;(gdb) break org.acme.quickstart.GreetingResource.greeting
+Breakpoint 1 at 0x470174 (3 locations)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Now we can start our process running&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;(gdb) run
+[New Thread 0x7ffff6aff700 (LWP 4581)]
+[New Thread 0x7ffff56f1700 (LWP 4582)]
+[New Thread 0x7ffff4ef0700 (LWP 4583)]
+[New Thread 0x7fffe7fff700 (LWP 4584)]
+[New Thread 0x7fffe77fe700 (LWP 4585)]
+[New Thread 0x7fffe6ffd700 (LWP 4586)]
+[New Thread 0x7fffe65ff700 (LWP 4587)]
+[New Thread 0x7fffe5bff700 (LWP 4588)]
+[New Thread 0x7fffe51ff700 (LWP 4589)]
+[New Thread 0x7fffcffff700 (LWP 4590)]
+2019-04-30 12:38:43,604 INFO  [io.quarkus] (main) Quarkus 0.14.0 started in 0.022s. Listening on: http://[::]:8080
+2019-04-30 12:38:43,605 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The application is now running and ready to accept requests.  It will break in executing if we make a call to &lt;code&gt;org.acme.quickstart.GreetingResource.greeting&lt;/code&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;observe_stack_trace&quot;&gt;Observe Stack Trace&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Open another terminal, and invoke out rest endpoint&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$curl localhost:8080/hello/greeting/john&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In the terminal running our application, the process will hit the breakpoint we set&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;[New Thread 0x7fffcf7fe700 (LWP 4766)]
+[Switching to Thread 0x7fffcf7fe700 (LWP 4766)]
+
+Thread 12 &quot;ecutor-thread-1&quot; hit Breakpoint 1, 0x0000000000470174 in org.acme.quickstart.GreetingResource.greeting ()
+    at /tmp/quarkus/quarkus-quickstarts/getting-started/target/sources/com/oracle/svm/graal/AMD64ArrayIndexOfForeignCalls.java:101
+101	/tmp/quarkus/quarkus-quickstarts/getting-started/target/sources/com/oracle/svm/graal/AMD64ArrayIndexOfForeignCalls.java: No such file or directory.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We can now inspect the frame, generate a stace trace and inspect variables&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;(gdb) bt
+#0  0x0000000000470174 in org.acme.quickstart.GreetingResource.greeting () at /tmp/quarkus/quarkus-quickstarts/getting-started/target/sources/com/oracle/svm/graal/AMD64ArrayIndexOfForeignCalls.java:101
+#1  0x0000000000470174 in com.oracle.svm.reflect.GreetingResource_greeting_9651677f1cbe66c5532b8a3a4f6d6e47f2a6a846.invoke(java.lang.Object *, java.lang.Object *, java.lang.Object *) (AParam0=0xeb9dc0,
+    AParam1=0x7fffe4208130, AParam2=0x7fffe4208678)
+#2  0x00000000006ffee2 in java.lang.reflect.Method.invoke(java.lang.Object *, java.lang.Object *, java.lang.Object *) (AParam0=&amp;lt;optimized out&amp;gt;, AParam1=&amp;lt;optimized out&amp;gt;, AParam2=&amp;lt;optimized out&amp;gt;)
+    at /tmp/quarkus/quarkus-quickstarts/getting-started/target/sources/java/lang/reflect/Method.java:498
+#3  0x0000000000a43795 in org.jboss.resteasy.core.MethodInjectorImpl.invoke(org.jboss.resteasy.core.MethodInjectorImpl *, org.jboss.resteasy.spi.HttpRequest *, org.jboss.resteasy.spi.HttpResponse *, java.lang.Object *, java.lang.Object[] *) (this=0x1862650, request=0x7fffe4205140, httpResponse=&amp;lt;optimized out&amp;gt;, resource=0x7fffe4208130, args=0x7fffe4208678)
+    at /tmp/quarkus/quarkus-quickstarts/getting-started/target/sources/org/jboss/resteasy/core/MethodInjectorImpl.java:151
+...
+#74 0x00007ffff7626594 in start_thread () from /lib64/libpthread.so.0
+#75 0x00007ffff6d01f4f in clone () from /lib64/libc.so.6
+
+(gdb) info  frame
+Stack level 0, frame at 0x7fffcf7fcf50:
+ rip = 0x470174 in org.acme.quickstart.GreetingResource.greeting (/tmp/quarkus/quarkus-quickstarts/getting-started/target/sources/com/oracle/svm/graal/AMD64ArrayIndexOfForeignCalls.java:101);
+    saved rip = 0x6ffee2
+ inlined into frame 1
+ source language unknown.
+ Arglist at unknown address.
+ Locals at unknown address, Previous frames sp in rsp
+ (gdb) up
+#1  0x0000000000470174 in com.oracle.svm.reflect.GreetingResource_greeting_9651677f1cbe66c5532b8a3a4f6d6e47f2a6a846.invoke(java.lang.Object *, java.lang.Object *, java.lang.Object *) (AParam0=0xeb9dc0,
+    AParam1=0x7fffe4208130, AParam2=0x7fffe4208678)
+(gdb) info  frame
+Stack level 1, frame at 0x7fffcf7fcf50:
+ rip = 0x470174 in com.oracle.svm.reflect.GreetingResource_greeting_9651677f1cbe66c5532b8a3a4f6d6e47f2a6a846.invoke(java.lang.Object *, java.lang.Object *, java.lang.Object *); saved rip = 0x6ffee2
+ called by frame at 0x7fffcf7fcf90, caller of frame at 0x7fffcf7fcf50
+ Arglist at 0x7fffcf7fcf08, args: AParam0=0xeb9dc0, AParam1=0x7fffe4208130, AParam2=0x7fffe4208678
+ Locals at 0x7fffcf7fcf08, Previous frames sp is 0x7fffcf7fcf50
+ Saved registers:
+  rip at 0x7fffcf7fcf48&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The frame that we set a breakpoint on &lt;code&gt;org.acme.quickstart.GreetingResource.greeting&lt;/code&gt; has been inlined into the frame above it, therefore Arglist, Locals etc are not available for this particular frame.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;I have shown you how to create a native image with debug symbols, how to start the process with a debugger attached and how to set breakpoints and inspect the running process with GDB.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This has created a native image that is now possible to debug or profile, with frame stack traces that map directly back to the Java source code.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content><author><name>John O'Hara</name></author></entry></feed>

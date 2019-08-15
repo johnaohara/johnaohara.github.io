@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Openshift_install_fedora - Jack Of all Trades, Master of none
+    
+  </title>
+
+  <meta name="description" content="So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Opens...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://localhost:4000/2019/05/23/openshift_install_fedora.html">
+  <link rel="alternate" type="application/rss+xml" title="Jack Of all Trades, Master of none" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">Jack Of all Trades, Master of none</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Posts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contact</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Page Header -->
+
+  <header class="masthead">
+    
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Openshift_install_fedora</h1>
+            
+            <span class="meta">Posted by
+              <a href="#">johara</a>
+              on May 23, 2019 &middot; <span class="reading-time" title="Estimated read time">
+  
+   5 mins  read </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <div class="paragraph">
+<p>So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Openshift on Fedora 27, that will get you up and running in no time!</p>
+</div>
+<div class="sect1">
+<h2 id="docker_rpm_installation_configuration">Docker rpm installation &amp; configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Following step-by-step guide will allow you to install the latest version of docker and openshift origin on Fedora 27.</p>
+</div>
+<div class="sect2">
+<h3 id="remove_old_versions_of_docker">remove old versions of docker</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>$ sudo dnf remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-selinux \
+                  docker-engine-selinux \
+                  docker-engine</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="setup_docker_repository">setup docker repository</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>install dnf-plugins-core which provides command line tools to manage your dnf repo.</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf -y install dnf-plugins-core</pre>
+</div>
+</div>
+</li>
+<li>
+<p>configure the <strong>stable</strong> fedora repository</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf config-manager \
+  --add-repo \
+  https://download.docker.com/linux/fedora/docker-ce.repo</pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Optional</strong>: enable the <strong>edge</strong> and <strong>test</strong> repos, which are disabled by default in the docker.repo</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf config-manager --set-enabled docker-ce-edge
+$ sudo dnf config-manager --set-enabled docker-ce-test</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="install_docker_ce">Install Docker-CE</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install latest version of Docker-ce</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf install docker-ce-17.12.1.ce-1.fc27.x86_64</pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Currently, docker versions greater then 17.12 do not work correctly with openshift v3.9.0. If you use a more recent version, you will likely see the following expception "linux mounts: Could not find source mount of /var/lib/origin/openshift.local.volumes"
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Start Docker</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo systemctl start docker</pre>
+</div>
+</div>
+</li>
+<li>
+<p>verfiy that the docker deamon is running correctly by running the <code>hello-world</code> image</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo docker run hello-world</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If installation has been successfull, you should see the following terminal output
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>   # sudo docker run hello-world
+
+     Hello from Docker!
+     This message shows that your installation appears to be working correctly.</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>create docker group to manage docker service</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo groupadd docker</pre>
+</div>
+</div>
+</li>
+<li>
+<p>add current user to docker group</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo usermod -aG docker $USER</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or a specific user</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo usermod -aG docker bob</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Log out and log back in again to ensure user has picked up the new group membership</p>
+</li>
+<li>
+<p>Test that you can use the docker service without sudo</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ docker run hello-world</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="openshift_installation_configuration">Openshift installation &amp; configuration</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the binary from the Releases page. <a href="https://www.openshift.org/download.html" class="bare">https://www.openshift.org/download.html</a></p>
+</li>
+<li>
+<p>Unpackage openshift server</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ tar xvf openshift-origin-server-v3.9.0-191fece-linux-64bit.tar.gz</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Unpackage openshift client tool</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ tar xvf openshift-origin-client-tools-v3.9.0-191fece-linux-64bit.tar.gz</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ensure required packages are installed</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ dnf install wget git net-tools bind-utils dnf-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ensure system is up to date</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ dnf update</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the directory you untarred the release into to your path:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ export PATH="$(pwd)":$PATH</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a file /etc/docker/daemon.json with following content</p>
+<div class="literalblock">
+<div class="content">
+<pre>{
+    "insecure-registries" : [ "hostname.cloudapp.net:5000" ]
+}</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Restart docker</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ systemctl daemon-reload
+$ systemctl restart docker</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Launch the openshift cluster:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ oc cluster up</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the above steps have been successful, you should see the following output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code># sudo oc cluster up
+Using nsenter mounter for OpenShift volumes
+Using 127.0.0.1 as the server IP
+Starting OpenShift using openshift/origin:v3.9.0 ...
+OpenShift server started.
+
+The server is accessible via web console at:
+    https://127.0.0.1:8443
+
+You are logged in as:
+    User:     developer
+    Password: &lt;any value&gt;
+
+To login as administrator:
+    oc login -u system:admin</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          
+          <a class="btn btn-primary float-right" href="/2019/05/23/GraalVM-Debug-Native-Image.html" data-toggle="tooltip" data-placement="top" title="Debugging native Quarkus binaries on Linux">Next<span class="d-none d-md-inline">
+              Post</span> &rarr;</a>
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:johara@redhat.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://twitter.com/JohnnyDoItAll">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/johnaohara">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy;  2019</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  <script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/startbootstrap-clean-blog/js/clean-blog.min.js"></script>
+
+<script src="/assets/scripts.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '');
+</script>
+
+
+
+</body>
+
+</html>
