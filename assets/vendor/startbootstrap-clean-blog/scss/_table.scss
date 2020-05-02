@@ -1,0 +1,88 @@
+table.tableblock {
+    border-collapse: collapse;
+  
+    thead th,
+    tbody th {
+      font-size: 1.125rem;
+      line-height: 1.5rem;
+      color: white !important;
+      font-weight: 400;
+      text-align: left;
+      padding: 1rem;
+      background-color: $quarkus-blue;
+      border: 1px solid $quarkus-blue;
+      > p,
+      > div,
+      > div > span {
+        color: inherit;
+        margin: inherit;
+        font-size: inherit;
+      }
+    }
+    
+    tbody td {
+        // padding: .25rem 1rem;
+        padding: .25rem;
+        border: 1px solid $quarkus-blue;
+    }
+  
+    tbody tr {
+      &:nth-child(even) {
+        background-color: #c8d6e5;
+      }
+      td p {
+         margin: 0;
+      }
+    }
+  }
+  
+  table.configuration-reference {
+    table-layout: fixed !important;
+    p.tableblock {
+      overflow: hidden;
+      word-wrap: break-word;
+    }
+  
+    .content .paragraph p {
+      word-wrap: break-word;
+    }
+  }
+  
+  
+  table.configuration-reference.tableblock > tbody { 
+    
+    > tr > th {
+      color: $dark-blue;
+    }
+    > tr {
+      background: transparent;
+      > th:nth-child(1) { width: 70%; }
+      > th:nth-child(2) { width: 15%; p { color: $quarkus-blue; } }
+      > th:nth-child(3) { width: 15%; p { color: $quarkus-blue; } }
+      > td {
+        border: none;
+      }
+  
+      > td:nth-child(2) p,
+      > td:nth-child(3) p,
+      > td .content p,
+      > th:nth-child(2) p,
+      > th:nth-child(3) p {
+        font-size: 0.8rem;
+      }
+    }
+    @media only screen and (max-width: 900px) {
+      > tr {
+        > td:nth-child(2), td:nth-child(3), th:nth-child(2), th:nth-child(3){
+          display: none;
+        }
+        > th:nth-child(1) { width: 100%; }
+        > th:nth-child(2) { width: 0%; }
+        > th:nth-child(3) { width: 0%; }
+      }
+    }
+  
+    > tr.odd > td {
+      background-color: #c8d6e5 !important;
+    }
+  }

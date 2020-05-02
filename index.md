@@ -5,6 +5,8 @@
 layout: home
 title: John O'Hara - Personal Blog
 background: '/img/highway-1209547_1920.jpg'
+pagination: 
+  enabled: true
 ---
 
-“The hardest thing to do is something that is close to nothing.”  -- Marina Abramovic
+<h1>Latest Blogs</h1>

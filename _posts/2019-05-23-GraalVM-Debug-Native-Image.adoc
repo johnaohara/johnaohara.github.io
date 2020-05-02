@@ -3,7 +3,6 @@ layout: post
 date:   2019-05-23 00:00 +0100
 author: John O'Hara
 synopsis: Debugging native binaries built on Linux with Quarkus requires differnt tools that debugging code running on the JVM.  In this post I cover how to build a native binary that you can debug with native debuggers
-background: '/img/defense-1403072_1920.jpg'
 ---
 
 = Debugging native Quarkus binaries on Linux

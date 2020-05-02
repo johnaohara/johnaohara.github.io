@@ -6,7 +6,7 @@ background: '/img/question-mark-2492009_1920.jpg'
 ---
 
 
-> “The hardest thing to do is something that is close to nothing.”  -- Marina Abramovic
+![portrait](/img/portrait_400x400.png){:class="img-responsive"}
 
 I need somewhere to put my notes (aka my working memory), not scribbled on pieces of paper that have fallen behind my desk. I am bad, like really bad, at remembering stuff; things I have to do, things I have done, birthdays, childrens performances. 
 
