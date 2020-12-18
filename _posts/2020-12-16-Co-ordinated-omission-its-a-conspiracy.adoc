@@ -1,0 +1,60 @@
+---
+layout: post
+date:   2020-12-16 00:00 +0100
+author: John O'Hara
+tags: performance, analysis, load driver, coordinated omission, accuracy, benchmarking, benchmarks, good practice
+synopsis: Your load driver and application are consipiring against you, find out what you can do to fix it!
+---
+
+= Coordinated Omission, it's a conspiracy!
+
+== Red pill or blue pill? Your Choice!
+
+Although it might not common knowledge, the coordinated omission problem is well documented. What is not common knowledge is "how do I know if my benchmarks suffer from it?".
+
+[ditaa]
+....
+                                              +------------+-----------+
+                                              |cRED        |cBLU       |
+you stay in Wonderland                    <-- |            |           | --> you wake with your existing benchmark 
+and I show you how deep the rabbit hole goes  |            |           |     and believe whatever you want to believe
+                                              |            |           |
+                                              +------------+-----------+
+....
+
+
+*Take the Blue Pill* At best your results are incorrect; at worst, you can not even see performance issues that are affecting your application. You believe whatever you want to believe! The worst part is you load generator and application actually conspire and lie about how bad your system really is!
+
+
+*Take the Red Pill* you will learn to use load generation tools that tell you there is a problem and you can start to see how bad the system really is!
+
+= What is Coordinated Omission?
+
+There are plenty of very well written articles regarding coordinated omission and it's root causes. If you are new to this issue 
+
+coordinated omission is a *client* issue and the basis of the coordinated omission problem is that "events" on the server directly impact measurements made by the client. I.e. if your load driver has not been designed to handle this issue, there is nothing you can do to see it.  There are no errors, the results look realistic, all the HTTP requests/responses complete. Everything looks normal.
+
+
+
+Any event on the server, i.e. JVM pauses.
+
+Clients making blocking calls (i.e. client code progress being blocked)
+
+
+If the client is thread per user based
+
+Need a tool that 
+
+We take a look at 2 tools, jMeter and Hyperfoil. 
+
+
+Even a well configured
+
+
+Why should I care?
+------------------
+
+Can you trust the results you see from your load driver?  Are you even aware that 
+
+More Info
+---------

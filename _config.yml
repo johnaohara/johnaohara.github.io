@@ -24,6 +24,8 @@ exclude:
   - Rakefile
   - .idea/
 asciidoc: {}
+keep_files:
+  - images
 asciidoctor:
   base_dir: :docdir
   safe: unsafe
@@ -31,6 +33,7 @@ asciidoctor:
     source-highlighter: highlightjs
     sectanchors: ''
     icons: font
+    imagesdir: /images
 pagination:
   
   # Site-wide kill switch, disabled here it doesn't run at all 
