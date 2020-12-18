@@ -1,0 +1,137 @@
+---
+layout: post
+date:   2020-12-14 00:00 +0100
+author: John O'Hara
+tags: performance, analysis, regression, automated
+synopsis: How to identify performance regression in time series datasets using a Hierarchical Agglomerative Clustering algorithm
+---
+
+= Using Hierarchical Agglomerative Clustering for Automated Software Regression Analysis
+
+Here I describe how a call a agglomerative hierarchical estimation algorithm implemented in R from a Java application, and how this can be used for multiple change point analysis in the context of software performance regression analysis. 
+
+This blog post covers how to integrate R scripts with Java applications, and how to utilise the R "ecp" package to perform change point detection for continual performance regression analysis.
+
+In a follow up post, we will be apply this technique to real-world performance metrics.
+
+Runtime characteristics determine the "performance" of a software application. How efficiently software can use the available hardware determines how much work can be done in a set period of time.The aim of performance regression testing is to determine *when* a definite change occurs within the noisy results of performance metrics.
+
+Time ordered performance metrics, captured continuously over multiple builds, are analogous to a noisy signal.  
+
+The ideal algorithm for discrete change point detection would be for a non-parameterized, multi-dimensional change point detection algorithm to be able to detect changes in a noisy signal.
+
+The aim is to reduce the number of false positives and provide as accurate as possible set of runs that introduced changes in the performance metrics.
+
+Hierarchical Agglomerative Clustering allows us to cluster together time-series data points which correlate to a change in performance at the boundary of the linear clusters.
+
+In practice, R provides packages that contain many statistical analysis function. One of these packages `ecp` contain two functions that perform change point detection with noisy signals.
+
+If you want to experiment yourself, the source code can be found on github[https://github.com/johnaohara/java-r-interoperability]
+
+== Background
+
+One area of interest for a performance engineer is to continually monitor the runtime characteristics of software as it evolves over time, and to ensure that as new features are added and bugs are fixed, that the runtime characteristics as a minimum do no degrade. Optimally, changes should also be introduced into the code base such that the characteristics improve over time. 
+
+Performance regression analysis is a technique to plot metrics captured during the execution of software under load in a time series to try and identify trends in the captured metrics and whether the performance of the system is improving or regression over time.  When a regression is detected, it is desirable to identify the particular code commit that introduced the change to allow engineers to assess the impact of that change.  
+
+
+Runtime metrics are not always independent.  Although there are "rules-of-thumb" for determining if you as a performance engineer are witnessing an improvement or degradation, it is not possible to determine over overall impact on system performance by considering a metric in isolation.  For example, a change that increases the memory consumption would typically be considered a regression in isolation, assuming everything else remains constant. However, if a change has been introduced that caches expensive objects, or objects that are created as a result of expensive I/O then the increase in memory is a trade off to reduce i/o calls and therefore the overall effect is a net positive impact.
+
+
+== How does Hierarchical Agglomerative Clustering work?
+
+Hierarchical Agglomerative Clustering is a bottom-up process of combining objects into clusters of objects that have similar properties, starting with the premise that each object forms it's own singular cluster and by examining the Euclidean distances of properties of neighbouring clusters, higher level clusters can be determined.  Once the entire dataset has been examined, each cluster of objects relate to one class of behavior, and the boundaries between clusters determine the change point, i.e at the boundary there was a change that occurred that effected the measured properties of the objects.
+
+
+Application metrics, including runtime metrics (memory usage, garbage collections, cpu cycles etc) and performance metrics (throughput, response time etc) are rarely independent. I.e. if you change the memory utilization of an application, it usually has an impact on the runtime performance of that application. 
+
+A ordered time-series dataset is naturally ordered into clusters.  Using a Hierarchical Agglomerative Clustering algorithm on time-ordered performance data will naturally create clusters of performance measurements where the boundaries of cluster indicate a change in performance, either a regression or and improvement. 
+
+
+=== Why not other clustering Algorithms, i.e. K-nearest Neighbors?
+
+While we are interested in creating clusters of application measurement data, we still need to preserve the time ordering of clusters of measurements. i.e. if a regression is introduced and then subsequently fixed, although the clusters before the regression and after the fix will display the same characteristics, we still would like to be able to distinguish between these 2 clusters as they represent how the performance changed over time.
+
+We are classifying, whilst retaining the time-ordered nature of the measurements.
+
+=== Calculating similarity between clusters
+
+So, how do we determine if 2 clusters are similar?
+
+
+
+== Experimentation
+
+In practice, R provides packages that contain many statistical analysis function. One of these packages `ecp` contain two functions that perform change point detection with noisy signals
+
+In 
+
+
+[source,r]
+----
+library("ecp");
+
+eDivFromFile <- function(fileName, ncols, buckets, bucketSize) {
+  dataPoints <- scan(fileName)
+  mat <- matrix(dataPoints, ncol = ncols, byrow = TRUE)
+  member <- rep(1:buckets, each = bucketSize)
+  changePoints <- e.agglo(X = mat, member = member, alpha = 1)
+  changePoints$estimates
+
+}
+----
+
+=== Calling R script from java
+
+==== Loading the R script
+[source,java]
+----
+URL resource = ScriptUtils.class.getClassLoader().getResource(scriptResource); // <1>
+Source source = Source.newBuilder("R", resource) // <2>
+        .interactive(false)
+        .build(); //<3>
+----
+<1> Load R script from project resources
+<2> Set the target language and script source code
+<3> Build the Source Object
+
+
+==== Calling R script function from java
+
+[source,java]
+----
+Context context = Context.newBuilder()
+                    .allowAllAccess(true)
+                    .build(); // <1>
+
+Value function = context.eval(source) // <2>
+
+Value result = function.execute(dataFile.getAbsolutePath(), 1, 40, 10); // <3>
+
+
+----
+<1> Create a new Context to execute to evaluate the R script
+<2> Parse and load the R script in the newly created context
+<3> Call the R function, passing in required parameters
+
+=== Passing Data
+
+== Results
+
+image::/img/posts/largeSignalNoiseRatio.png[High Signal to Noise]
+image::/img/posts/smallSignalNoiseRatio.png[Low Signal to Noise]
+
+== Summary
+
+
+== Further Work
+
+ - Initial cluster size
+ - Similarity calculations
+ - Normalising multi-dimensional datasets
+ - Investigate what happens at the boundary when the latest result contains a regression, i.e. there should only be a cluster of 1 value.
+ - Investigate data filter prior to analysis, e.g. https://www.datadoghq.com/blog/auto-smoother-asap/ or http://futuredata.stanford.edu/asap/
+ - Integrate into Horreum 
+
+1 - https://www.datanovia.com/en/lessons/agglomerative-hierarchical-clustering/
+
