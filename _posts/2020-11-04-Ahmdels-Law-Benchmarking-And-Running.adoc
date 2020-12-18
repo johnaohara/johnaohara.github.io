@@ -1,0 +1,27 @@
+= What does Ahmdels Law have to do with Running and Benchmarking?
+
+This morning on my run I had a bit of an epiphany, not only did I dream up a good analigy for Ahmdel's law, I also devised a new training regime!
+
+Running is the only part of the day where I am clear to think without interruption, and being a technical, data-driven, competative individual I always track my runs on Strava, I am always trying to run further/faster and get dissapointed when I do not see myself improving, or demotivated when the returns I see are not propotional to the amount of effort I put in.
+
+
+I think I am typical to most runners, I have set routes and I time my routes.  I measure te time taken to complete a particular route. Improvements come when I run a particular route faster.  It soon comes to a point where improvements in time decrease and I see diminishing returns for the amount of effort I put in. 
+
+
+Today the analogy clicked that running is like systems benchmarking, I have set an amout of work to do, the distance of my run, and I measure the time it takes me to complete that work.  The more performant I get, i.e. the faster I run, the quicker I complete my run!
+
+But it also struck me that what I know from systems benchmarking is that if I fix the amount of work I do, there is a natural limit to 
+
+
+== Ahmdels law?
+
+
+[latexmath] 
+++++
+y = x^2 
+++++
+
+
+
+== Fixed Time or Fixed Distance?
+
