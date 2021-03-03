@@ -1,0 +1,10 @@
+{
+  "simulation": "bars.KtorSimulation",
+  "simulationId": "ktorsimulation",
+  "start": 1614776102378,
+  "description": "",
+  "scenarios": ["Bars"],
+  "assertions": [
+
+  ]
+}

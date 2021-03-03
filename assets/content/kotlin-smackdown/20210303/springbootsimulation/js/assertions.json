@@ -1,0 +1,10 @@
+{
+  "simulation": "bars.SpringBootSimulation",
+  "simulationId": "springbootsimulation",
+  "start": 1614776030209,
+  "description": "",
+  "scenarios": ["Bars"],
+  "assertions": [
+
+  ]
+}
