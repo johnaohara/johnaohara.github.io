@@ -12,6 +12,8 @@
     
   </title>
 
+  <script src="/assets/highlightjs-pack.js" type="text/javascript"></script>
+  
   <meta name="description" content="So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Opens...">
 
   <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
@@ -22,8 +24,10 @@
   <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css">
 
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="http://localhost:4000/2019/05/23/openshift_install_fedora.html">
+  <link rel="canonical" href="/2019/05/23/openshift_install_fedora.html">
   <link rel="alternate" type="application/rss+xml" title="Jack Of all Trades, Master of none" href="/feed.xml">
+
+
 
 </head>
 
@@ -65,7 +69,7 @@
     <div class="overlay"></div>
     <div class="container">
       <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="col-lg-12 col-md-12 mx-auto">
           <div class="post-heading">
             <h1>Openshift_install_fedora</h1>
             
@@ -84,22 +88,22 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-lg-8 col-md-10 mx-auto">
+      <div class="col-lg-12 col-md-12 mx-auto">
 
         <div class="paragraph">
 <p>So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Openshift on Fedora 27, that will get you up and running in no time!</p>
 </div>
 <div class="sect1">
-<h2 id="docker_rpm_installation_configuration">Docker rpm installation &amp; configuration</h2>
+<h2 id="docker-rpm-installation-configuration"><a class="anchor" href="#docker-rpm-installation-configuration"></a>Docker rpm installation &amp; configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Following step-by-step guide will allow you to install the latest version of docker and openshift origin on Fedora 27.</p>
 </div>
 <div class="sect2">
-<h3 id="remove_old_versions_of_docker">remove old versions of docker</h3>
+<h3 id="remove-old-versions-of-docker"><a class="anchor" href="#remove-old-versions-of-docker"></a>remove old versions of docker</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>$ sudo dnf remove docker \
+<pre class="highlightjs highlight"><code class="language-none hljs">$ sudo dnf remove docker \
                   docker-client \
                   docker-client-latest \
                   docker-common \
@@ -113,7 +117,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="setup_docker_repository">setup docker repository</h3>
+<h3 id="setup-docker-repository"><a class="anchor" href="#setup-docker-repository"></a>setup docker repository</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -147,7 +151,7 @@ $ sudo dnf config-manager --set-enabled docker-ce-test</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="install_docker_ce">Install Docker-CE</h3>
+<h3 id="install-docker-ce"><a class="anchor" href="#install-docker-ce"></a>Install Docker-CE</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -199,7 +203,7 @@ If installation has been successfull, you should see the following terminal outp
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>   # sudo docker run hello-world
+<pre class="highlightjs highlight"><code class="language-none hljs">   # sudo docker run hello-world
 
      Hello from Docker!
      This message shows that your installation appears to be working correctly.</code></pre>
@@ -247,7 +251,7 @@ If installation has been successfull, you should see the following terminal outp
 </div>
 </div>
 <div class="sect1">
-<h2 id="openshift_installation_configuration">Openshift installation &amp; configuration</h2>
+<h2 id="openshift-installation-configuration"><a class="anchor" href="#openshift-installation-configuration"></a>Openshift installation &amp; configuration</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
@@ -325,7 +329,7 @@ $ systemctl restart docker</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code># sudo oc cluster up
+<pre class="highlightjs highlight"><code class="language-none hljs"># sudo oc cluster up
 Using nsenter mounter for OpenShift volumes
 Using 127.0.0.1 as the server IP
 Starting OpenShift using openshift/origin:v3.9.0 ...
@@ -407,7 +411,7 @@ To login as administrator:
           </li>
           
         </ul>
-        <p class="copyright text-muted">Copyright &copy;  2019</p>
+        <p class="copyright text-muted">Copyright &copy;  2021</p>
       </div>
     </div>
   </div>
@@ -435,6 +439,7 @@ To login as administrator:
 
 
 
+  <script>hljs.initHighlightingOnLoad();</script>
 </body>
 
 </html>

@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-08-15T08:19:44+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jack Of all Trades, Master of none</title><subtitle>Musings of a Mediocre Java Muddleware Muskateer</subtitle><entry><title type="html">Openshift_install_fedora</title><link href="http://localhost:4000/2019/05/23/openshift_install_fedora.html" rel="alternate" type="text/html" title="Openshift_install_fedora" /><published>2019-05-23T00:00:00+01:00</published><updated>2019-05-23T00:00:00+01:00</updated><id>http://localhost:4000/2019/05/23/openshift_install_fedora</id><content type="html" xml:base="http://localhost:4000/2019/05/23/openshift_install_fedora.html">&lt;div class=&quot;paragraph&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-03-03T13:37:30+00:00</updated><id>/feed.xml</id><title type="html">Jack Of all Trades, Master of none</title><subtitle>“The hardest thing to do is something that is close to nothing.” -- Marina Abramovic</subtitle><entry><title type="html">Openshift_install_fedora</title><link href="/2019/05/23/openshift_install_fedora.html" rel="alternate" type="text/html" title="Openshift_install_fedora" /><published>2019-05-23T00:00:00+01:00</published><updated>2019-05-23T00:00:00+01:00</updated><id>/2019/05/23/openshift_install_fedora</id><content type="html" xml:base="/2019/05/23/openshift_install_fedora.html">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Openshift on Fedora 27, that will get you up and running in no time!&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;docker_rpm_installation_configuration&quot;&gt;Docker rpm installation &amp;amp; configuration&lt;/h2&gt;
+&lt;h2 id=&quot;docker-rpm-installation-configuration&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#docker-rpm-installation-configuration&quot;&gt;&lt;/a&gt;Docker rpm installation &amp;amp; configuration&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Following step-by-step guide will allow you to install the latest version of docker and openshift origin on Fedora 27.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;remove_old_versions_of_docker&quot;&gt;remove old versions of docker&lt;/h3&gt;
+&lt;h3 id=&quot;remove-old-versions-of-docker&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#remove-old-versions-of-docker&quot;&gt;&lt;/a&gt;remove old versions of docker&lt;/h3&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;$ sudo dnf remove docker \
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-none hljs&quot;&gt;$ sudo dnf remove docker \
                   docker-client \
                   docker-client-latest \
                   docker-common \
@@ -25,7 +25,7 @@
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;setup_docker_repository&quot;&gt;setup docker repository&lt;/h3&gt;
+&lt;h3 id=&quot;setup-docker-repository&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#setup-docker-repository&quot;&gt;&lt;/a&gt;setup docker repository&lt;/h3&gt;
 &lt;div class=&quot;olist arabic&quot;&gt;
 &lt;ol class=&quot;arabic&quot;&gt;
 &lt;li&gt;
@@ -59,7 +59,7 @@ $ sudo dnf config-manager --set-enabled docker-ce-test&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;install_docker_ce&quot;&gt;Install Docker-CE&lt;/h3&gt;
+&lt;h3 id=&quot;install-docker-ce&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#install-docker-ce&quot;&gt;&lt;/a&gt;Install Docker-CE&lt;/h3&gt;
 &lt;div class=&quot;olist arabic&quot;&gt;
 &lt;ol class=&quot;arabic&quot;&gt;
 &lt;li&gt;
@@ -111,7 +111,7 @@ If installation has been successfull, you should see the following terminal outp
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;   # sudo docker run hello-world
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-none hljs&quot;&gt;   # sudo docker run hello-world
 
      Hello from Docker!
      This message shows that your installation appears to be working correctly.&lt;/code&gt;&lt;/pre&gt;
@@ -159,7 +159,7 @@ If installation has been successfull, you should see the following terminal outp
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;openshift_installation_configuration&quot;&gt;Openshift installation &amp;amp; configuration&lt;/h2&gt;
+&lt;h2 id=&quot;openshift-installation-configuration&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#openshift-installation-configuration&quot;&gt;&lt;/a&gt;Openshift installation &amp;amp; configuration&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;olist arabic&quot;&gt;
 &lt;ol class=&quot;arabic&quot;&gt;
@@ -237,7 +237,7 @@ $ systemctl restart docker&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;# sudo oc cluster up
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-none hljs&quot;&gt;# sudo oc cluster up
 Using nsenter mounter for OpenShift volumes
 Using 127.0.0.1 as the server IP
 Starting OpenShift using openshift/origin:v3.9.0 ...
@@ -258,8 +258,8 @@ To login as administrator:
 &lt;/ol&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;/div&gt;</content><author><name>johara</name></author><summary type="html">So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Openshift on Fedora 27, that will get you up and running in no time!</summary></entry><entry><title type="html">Debugging native Quarkus binaries on Linux</title><link href="http://localhost:4000/2019/05/23/GraalVM-Debug-Native-Image.html" rel="alternate" type="text/html" title="Debugging native Quarkus binaries on Linux" /><published>2019-05-23T00:00:00+01:00</published><updated>2019-05-23T00:00:00+01:00</updated><id>http://localhost:4000/2019/05/23/GraalVM-Debug-Native-Image</id><content type="html" xml:base="http://localhost:4000/2019/05/23/GraalVM-Debug-Native-Image.html">&lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+&lt;/div&gt;</content><author><name>johara</name></author><summary type="html">So.. you want to install Openshift on Fedora? Confused by the myriad of installation options? Here, we run through step-by-step an easy installation of Openshift on Fedora 27, that will get you up and running in no time!</summary></entry><entry><title type="html">Debugging native Quarkus binaries on Linux</title><link href="/2019/05/23/GraalVM-Debug-Native-Image.html" rel="alternate" type="text/html" title="Debugging native Quarkus binaries on Linux" /><published>2019-05-23T00:00:00+01:00</published><updated>2019-05-23T00:00:00+01:00</updated><id>/2019/05/23/GraalVM-Debug-Native-Image</id><content type="html" xml:base="/2019/05/23/GraalVM-Debug-Native-Image.html">&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;introduction&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#introduction&quot;&gt;&lt;/a&gt;Introduction&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Quarkus strives to acheive parity between ruuning your hotspot on a JVM in jvm mode or GraalVM in native mode. If you find something works on the JVM, but does not in a native binary, that is a bug.  Any bugs you find, please report at &lt;a href=&quot;https://github.com/quarkusio/quarkus/issues&quot; class=&quot;bare&quot;&gt;https://github.com/quarkusio/quarkus/issues&lt;/a&gt;.&lt;/p&gt;
@@ -293,7 +293,7 @@ To login as administrator:
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;prerequisites&quot;&gt;Prerequisites&lt;/h2&gt;
+&lt;h2 id=&quot;prerequisites&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#prerequisites&quot;&gt;&lt;/a&gt;Prerequisites&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;ulist&quot;&gt;
 &lt;ul&gt;
@@ -328,21 +328,21 @@ To login as administrator:
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;build_a_debuggable_native_image&quot;&gt;Build a debuggable native image&lt;/h2&gt;
+&lt;h2 id=&quot;build-a-debuggable-native-image&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#build-a-debuggable-native-image&quot;&gt;&lt;/a&gt;Build a debuggable native image&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;I will use the &lt;a href=&quot;https://github.com/quarkusio/quarkus-quickstarts/tree/master/getting-started&quot;&gt;getting start quickstart&lt;/a&gt; available from &lt;a href=&quot;https://github.com/quarkusio/quarkus-quickstarts&quot; class=&quot;bare&quot;&gt;https://github.com/quarkusio/quarkus-quickstarts&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;1_set_graalvm_home_to_graalvm_ee_directory&quot;&gt;1) Set GRAALVM_HOME to GraalVM EE directory&lt;/h3&gt;
+&lt;h3 id=&quot;1-set-graalvm_home-to-graalvm-ee-directory&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#1-set-graalvm_home-to-graalvm-ee-directory&quot;&gt;&lt;/a&gt;1) Set GRAALVM_HOME to GraalVM EE directory&lt;/h3&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$export GRAALVM_HOME=path_to_graalvm_ee&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$export GRAALVM_HOME=path_to_graalvm_ee&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;2_build_native_binary_with_debug_symbols&quot;&gt;2) Build native binary with debug symbols&lt;/h3&gt;
+&lt;h3 id=&quot;2-build-native-binary-with-debug-symbols&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#2-build-native-binary-with-debug-symbols&quot;&gt;&lt;/a&gt;2) Build native binary with debug symbols&lt;/h3&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;We need to configure the build tools to pass the correct parameters to the native image generator.&lt;/p&gt;
 &lt;/div&gt;
@@ -351,13 +351,13 @@ To login as administrator:
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;maven&quot;&gt;Maven&lt;/h3&gt;
+&lt;h3 id=&quot;maven&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#maven&quot;&gt;&lt;/a&gt;Maven&lt;/h3&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Edit the &lt;code&gt;pom.xml&lt;/code&gt;, add the following to the &lt;code&gt;quarkus-maven-plugin&lt;/code&gt; configuration;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;&amp;lt;plugin&amp;gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-none hljs&quot;&gt;&amp;lt;plugin&amp;gt;
     &amp;lt;groupId&amp;gt;io.quarkus&amp;lt;/groupId&amp;gt;
     &amp;lt;artifactId&amp;gt;quarkus-maven-plugin&amp;lt;/artifactId&amp;gt;
     ...
@@ -377,7 +377,7 @@ To login as administrator:
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$mvn clean package -P native&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$mvn clean package -P native&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;admonitionblock note&quot;&gt;
@@ -399,7 +399,7 @@ To login as administrator:
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$cd target&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$cd target&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -407,22 +407,22 @@ To login as administrator:
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$ls *-runner*
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$ls *-runner*
 ./getting-started-1.0-SNAPSHOT-runner ./getting-started-1.0-SNAPSHOT-runner.debug&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;You are now ready to &lt;a href=&quot;#debug-with-gdb&quot;&gt;[debug-with-gdb]&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;You are now ready to &lt;a href=&quot;#debug-with-gdb&quot;&gt;&lt;span id=&quot;debug-with-gdb&quot;&gt;Debug with GDB&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;gradle&quot;&gt;Gradle&lt;/h3&gt;
+&lt;h3 id=&quot;gradle&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#gradle&quot;&gt;&lt;/a&gt;Gradle&lt;/h3&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;edit &lt;code&gt;build.gradle&lt;/code&gt;, and add the following to the end of the build script;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code&gt;buildNative.configure {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-none hljs&quot;&gt;buildNative.configure {
     additionalBuildArgs = [&quot;-g&quot;]
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -432,7 +432,7 @@ To login as administrator:
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$gradlew clean build buildNative --docker-build=false&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$gradlew clean build buildNative --docker-build=false&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;admonitionblock note&quot;&gt;
@@ -454,7 +454,7 @@ To login as administrator:
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$cd build&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$cd build&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -462,7 +462,7 @@ To login as administrator:
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$ ls  ./*runner*
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$ ls  ./*runner*
 ./getting-started-runner  ./getting-started-runner.debug&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -470,16 +470,16 @@ To login as administrator:
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;debug_with_gdb&quot;&gt;&lt;span id=&quot;debug-with-gdb&quot;&gt;Debug with GDB&lt;/span&gt;&lt;/h2&gt;
+&lt;h2 id=&quot;debug-with-gdb&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#debug-with-gdb&quot;&gt;&lt;/a&gt;&lt;span id=&quot;debug-with-gdb&quot;&gt;Debug with GDB&lt;/span&gt;&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;1_start_applicatipon_with_gdb&quot;&gt;1) Start applicatipon with gdb&lt;/h3&gt;
+&lt;h3 id=&quot;1-start-applicatipon-with-gdb&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#1-start-applicatipon-with-gdb&quot;&gt;&lt;/a&gt;1) Start applicatipon with gdb&lt;/h3&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Start GDB session&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$gdb ./getting-started-1.0-SNAPSHOT-runner&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$gdb ./getting-started-1.0-SNAPSHOT-runner&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -487,21 +487,21 @@ To login as administrator:
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$gdb ./getting-started-runner&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$gdb ./getting-started-runner&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;setting_breakpoints&quot;&gt;Setting breakpoints&lt;/h2&gt;
+&lt;h2 id=&quot;setting-breakpoints&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#setting-breakpoints&quot;&gt;&lt;/a&gt;Setting breakpoints&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Before we start our application running, we are going to set a breakpoint using the fully qualified name for our Java method&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;(gdb) break org.acme.quickstart.GreetingResource.greeting
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;(gdb) break org.acme.quickstart.GreetingResource.greeting
 Breakpoint 1 at 0x470174 (3 locations)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -510,7 +510,7 @@ Breakpoint 1 at 0x470174 (3 locations)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;(gdb) run
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;(gdb) run
 [New Thread 0x7ffff6aff700 (LWP 4581)]
 [New Thread 0x7ffff56f1700 (LWP 4582)]
 [New Thread 0x7ffff4ef0700 (LWP 4583)]
@@ -531,14 +531,14 @@ Breakpoint 1 at 0x470174 (3 locations)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;observe_stack_trace&quot;&gt;Observe Stack Trace&lt;/h2&gt;
+&lt;h2 id=&quot;observe-stack-trace&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#observe-stack-trace&quot;&gt;&lt;/a&gt;Observe Stack Trace&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Open another terminal, and invoke out rest endpoint&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;$curl localhost:8080/hello/greeting/john&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;$curl localhost:8080/hello/greeting/john&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -546,7 +546,7 @@ Breakpoint 1 at 0x470174 (3 locations)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;[New Thread 0x7fffcf7fe700 (LWP 4766)]
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;[New Thread 0x7fffcf7fe700 (LWP 4766)]
 [Switching to Thread 0x7fffcf7fe700 (LWP 4766)]
 
 Thread 12 &quot;ecutor-thread-1&quot; hit Breakpoint 1, 0x0000000000470174 in org.acme.quickstart.GreetingResource.greeting ()
@@ -559,7 +559,7 @@ Thread 12 &quot;ecutor-thread-1&quot; hit Breakpoint 1, 0x0000000000470174 in or
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;sh&quot;&gt;(gdb) bt
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-sh hljs&quot; data-lang=&quot;sh&quot;&gt;(gdb) bt
 #0  0x0000000000470174 in org.acme.quickstart.GreetingResource.greeting () at /tmp/quarkus/quarkus-quickstarts/getting-started/target/sources/com/oracle/svm/graal/AMD64ArrayIndexOfForeignCalls.java:101
 #1  0x0000000000470174 in com.oracle.svm.reflect.GreetingResource_greeting_9651677f1cbe66c5532b8a3a4f6d6e47f2a6a846.invoke(java.lang.Object *, java.lang.Object *, java.lang.Object *) (AParam0=0xeb9dc0,
     AParam1=0x7fffe4208130, AParam2=0x7fffe4208678)
@@ -609,7 +609,7 @@ Stack level 1, frame at 0x7fffcf7fcf50:
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+&lt;h2 id=&quot;summary&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#summary&quot;&gt;&lt;/a&gt;Summary&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;I have shown you how to create a native image with debug symbols, how to start the process with a debugger attached and how to set breakpoints and inspect the running process with GDB.&lt;/p&gt;
@@ -618,4 +618,4 @@ Stack level 1, frame at 0x7fffcf7fcf50:
 &lt;p&gt;This has created a native image that is now possible to debug or profile, with frame stack traces that map directly back to the Java source code.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;/div&gt;</content><author><name>John O'Hara</name></author></entry></feed>
+&lt;/div&gt;</content><author><name>John O'Hara</name></author><summary type="html">Introduction</summary></entry></feed>
