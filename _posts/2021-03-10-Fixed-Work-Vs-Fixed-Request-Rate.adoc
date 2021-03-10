@@ -1,0 +1,83 @@
+---
+layout: post
+date:   2021-03-10 00:00 +0100
+author: John O'Hara
+synopsis: 
+---
+
+What type of benchmark makes sense? Fixed work or fixed Request Rate
+
+= Fixed Work vs Fixed Throughput benchmark to simulate user load
+
+== Introduction
+
+I recently watched a presentation comparing a number of different frameworks that measured the response times for running a fixed workload.  
+
+There a number of interesting features of the load that was generated, which skewed response times and therefore impacted any conclusions that can be derived from the results.
+
+== Fixed load benchmark
+
+The benchmark (https://github.com/jamesward/kotlin_server_framework_smackdown) compared a number of popular reactive frameworks by creating 1000 users that each performed 10x GET operations followed by 1x POST operation.  The benchmark measured the response times for each user.  Therefore there will 11000 HTTP requests sent during the test.
+
+The results from this benchmark running on 
+
+
+== Assumptions and Observations
+
+There appears to be a number of assumptions made when designing the test;
+
+ - It is assumed that 1000 users will open a connection and start making immediately start sending requests to the SUT.  What you would expect to see if the SUT was able to service this  is 1000 users at T==0, with the number of users decreasing as they complete their workload.   If we look at the graphs, we can see that this did not happen for any framework tested. The number of users steadily increases for the first half of the test and then starts to decrease.  This is showing us that there is feedback from the SUT that prevents most users from generating requests from the start of the test.  For any users that are blocked from sending requests, their blocked time is not measured in the response time statistics.  This skews the response time statistics.  What is more, is each framework exhibits a different load pattern. Therefore the load generated (i.e. the user request arrival rate) by Gatling was not the same for each framework.  
+
+Another assumption/observation made is response times increase as more data is added to the system.  Looking at the `add` operation for Quarkus, we can see that add does not start until 5 seconds into the workload.  What happens in this particular load scenario is 1000 users are performing 10x GET requests followed by 1x POST requests. As all users start at once, all users are trying to perform their get requests before posting any data requests. Looking at the graphs for Quarkus, there are no `add` requests until half way into the test.  For the majority of the `get` requests, there is not actually any data in the database and the SUT is returning an empty set for the majority of GET requests.
+
+This test emulates a sort of batch test, albeit there is not a single request to start a batch process. The system is overloaded by this scenario and the most valuable metric in this scenario is `how long did it take to process all the requests`, i.e. what was the total time to process the batch. Each test took approx 10s to run on your machine for each framework, so that in itself does not tell us anything about the perf characteristics of any framework. Therefore, we are likely seeing the constraints of the underlying system, not necessarily the framework themselves.
+
+I also ran the 1000 user `atOnce` load on my laptop, and each framework took the following times to complete the benchmark;
+
+Spring 20 sec
+Ktor 25 sec
+Micronaut 20 sec
+Quarkus (modifed, details below) 12 sec
+
+These figures demonstrate the time differences to clear an overloaded backlog of requests, which is a proxy for throughput performance.       
+
+What this test is probably evaluating is buffering in the platform TCP stack, contention on the DB connection pool and kernel scheduler as we are trying to run 100's of threads on a 4 core machine.  
+
+Another observation is this benchmark is running an application *and* the load generator in the JVM on the same machine.  As the JVM is started for each test, and the tests last for a few seconds, most of the time will be spent running in interpreted mode. I have not profiled, but I suspect that if you profiled the SUT JVM and the load generator JVM that you will probably see approx 20-30% of CPU in the C2 compiler. In order to measure the framework efficiency, *both* the load generator and SUT need time to warm up, before measurements are taken.  dThis might be typical if you run your application in a "serverless" environment, but even in these environments, but only the SUT would be cold, you would not expect a user application to be compiling itself as it is send request.
+
+
+The final observation I made was Quarkus implementation of `get` endpoint is currently returning a Multi<Bar> response. Multi response types are designed to be return an unbounded stream of items, where production of items is also asynchronous. Uni types are designed to return either 1 or 0 results. Take a look at: https://smallrye.io/smallrye-mutiny/pages/philosophy#uni-and-multi.  For this example, and as implemented in the other frameworks, we want to return a single `List<Bar>` which we return from the result of a single DB query.  The most appropriate response type in this scenario is to return a `Uni<List<Bar>>` from the `get` endpoint. This also makes the behaviour consistent across the frameworks.
+
+
+
+Therefore, I made the following to modifications to the benchmark (https://github.com/johnaohara/kotlin_server_framework_smackdown/tree/modifiedSimulation);
+
+1) I refactored the Simulations to allow configuration of the load generation from the command line
+
+2) I introduced a new load generation profile that steadily increases the arrival rate of users to a constant rate of users over a set duration. This is configurable via command line arguments to the gatling test. This increases the users during a warm up period, then will measure a constant arrival rate of users over a set period of time.  This allows us to measure the response times at different constant levels of load and find the load level at which the SUT starts to degrade wrt response times from a users perspective. We can choose any SLA's we may want to impose (e.g. gunnar suggested a 100ms 99.99th centile response time).  What this does is allows us to find the point *at which the SUT breaks*.
+
+3) I modified the Quarkus version to return a Uni<List<Bar>> instead of a Multi<Bar>. As previously described, this is a more appropriate response type for this scenario.
+
+
+I ran on a 16core machine (AMD Ryzen 9 3950X) with 64GB ram. The results of the modified benchmark are interesting and show;
+
+1) once the system has reached saturation, the mean and 99th centile response times increase linearly as the number of users/sec increases. This confirms the observation that once the system has reached saturation, we are seeing the requests queuing in the system
+ 
+2) Again, at loads that saturate the SUT the gatling graphs demonstrate that there is feedback from the SUT that is preventing Gatling from generating load at the required level. However, Gatling does not report this. Although the response times are more indicative of user experience, they are not accurate once the system has reached saturation.  We can see this in the graphs as the number of users per second start to increase above the requested injection rate
+
+3) The interesting points to note are the load levels at which each framework starts to degrade are very different. If we set a limit of 99th Centile to be 100ms, this means that 1 out of 100 requests will see a response time of 100ms. Each user is sending 11 requests per second (10X get, 1x POST), which is approx 1 in 9 users (100/11) experiencing a slow response from the system every second. 100ms is rather arbitrary, but look at the inflection point at which the system degrades, 100ms appears to be a fairly reliable cut off as the systems degrade very quickly after passing this threshold.
+
+Spring ~43 users/sec
+Ktor ~69 users/sec
+Micronaut ~77 users/sec
+Quarkus ~165 users/sec
+
+Looking at the number of users that each framework can support without the system degrading, it is clear that load levels each framework can support are different. 
+
+         
+Even *these* results I would not take at face value, because;
+
+1) Not all implementations are equal, some frameworks using coroutines, which *will* effect the threading model and therefore the results. 
+2) The test is still run on one machine, over the lo interface.  The test needs to split out over at least 2 machines, with the load generator running on a seperate machine so that it does not impact the SUT (at a kernel level)
+3) Frameworks will have different default configurations. You may want to compare frameworks OOTB without configuration.  Most frameworks make "sensible" choices for configuration options, but they will likely all be different. And a sensible choice may not be appropriate for the application that is being tested.  In our testing, to ensure that we are making comparisons that fair across frameowrks, as a minimum we ensure that any cpu/mem limits are consistent and connections to external services (e.g. database connections) are the same. 
+4) The workload is still not typical of normal users, but the methodology demonstrates the point of saturation for this particular test.
